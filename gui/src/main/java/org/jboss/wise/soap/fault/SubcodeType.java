@@ -21,12 +21,7 @@
  */
 package org.jboss.wise.soap.fault;
 
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.*;
 import javax.xml.namespace.QName;
 
 /**
@@ -41,35 +36,35 @@ import javax.xml.namespace.QName;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SubcodeType", namespace = "http://www.w3.org/2003/05/soap-envelope", propOrder = {
-   "Value",
-   "Subcode"
+        "Value",
+        "Subcode"
 })
 public class SubcodeType {
-   @XmlTransient
-   private static final String ns="http://www.w3.org/2003/05/soap-envelope";
+    @XmlTransient
+    private static final String ns = "http://www.w3.org/2003/05/soap-envelope";
 
-   @XmlElement(namespace = ns)
-   private QName Value;
+    @XmlElement(namespace = ns)
+    private QName Value;
 
-   @XmlElements(@XmlElement(namespace = ns))
-   private SubcodeType Subcode;
+    @XmlElements(@XmlElement(namespace = ns))
+    private SubcodeType Subcode;
 
-   public SubcodeType(QName value) {
-      Value = value;
-   }
+    public SubcodeType(QName value) {
+        Value = value;
+    }
 
-   public SubcodeType() {
-   }
+    public SubcodeType() {
+    }
 
-   public QName getValue() {
-      return Value;
-   }
+    public QName getValue() {
+        return Value;
+    }
 
-   public SubcodeType getSubcode() {
-      return Subcode;
-   }
+    public SubcodeType getSubcode() {
+        return Subcode;
+    }
 
-   void setSubcode(SubcodeType subcode) {
-      Subcode = subcode;
-   }
+    void setSubcode(SubcodeType subcode) {
+        Subcode = subcode;
+    }
 }

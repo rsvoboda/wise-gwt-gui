@@ -1,13 +1,13 @@
 package org.jboss.wise.test.navigation;
 
-import java.net.URL;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.wise.test.utils.StartPage;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.wise.test.utils.PropUtils;
+import org.jboss.wise.test.utils.StartPage;
+import org.jboss.wise.test.utils.WiseTest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,10 +16,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.jboss.wise.test.utils.WiseTest;
 
 
 /**
@@ -68,7 +68,7 @@ public class CancelButtonTestCase extends WiseTest {
 
             List<WebElement> buttonList = new ArrayList<WebElement>();
             buttonList = browser.findElements(By.className(
-                PropUtils.get("tag.wise-gwt-Button")));
+                    PropUtils.get("tag.wise-gwt-Button")));
 
             String cancelLabel = PropUtils.get("label.wise-gwt-Button.Cancel");
             WebElement cancelButton = null;
@@ -79,7 +79,7 @@ public class CancelButtonTestCase extends WiseTest {
             }
 
             Assert.assertNotNull("Failed to find Cancel button on page, "
-                + browser.getCurrentUrl(), cancelButton);
+                    + browser.getCurrentUrl(), cancelButton);
             cancelButton.click();
 
         } catch (Exception e1) {

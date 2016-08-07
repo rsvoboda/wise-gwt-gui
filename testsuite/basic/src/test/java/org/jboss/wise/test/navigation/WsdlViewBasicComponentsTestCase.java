@@ -1,13 +1,13 @@
 package org.jboss.wise.test.navigation;
 
-import java.net.URL;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.wise.test.utils.StartPage;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.wise.test.utils.PropUtils;
+import org.jboss.wise.test.utils.StartPage;
+import org.jboss.wise.test.utils.WiseTest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,8 +17,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
-import org.jboss.wise.test.utils.WiseTest;
 
 
 /**
@@ -55,7 +55,7 @@ public class WsdlViewBasicComponentsTestCase extends WiseTest {
 
         try {
             Graphene.waitModel().withTimeout(30, TimeUnit.SECONDS).until()
-               .element(By.className(PropUtils.get("homepage.input.box"))).is().visible();
+                    .element(By.className(PropUtils.get("homepage.input.box"))).is().visible();
 
             String inputBoxTag = PropUtils.get("homepage.input.box");
             WebElement element = browser.findElement(By.className(inputBoxTag));
@@ -68,10 +68,10 @@ public class WsdlViewBasicComponentsTestCase extends WiseTest {
             WebElement element = browser.findElement(By.className(buttonTag));
 
             String label = PropUtils.get("homepage.read.wsdl.label");
-            Assert.assertTrue("Home page should have a [" + label +"] button but found text, "
-                + element.getText(), element.getText().equals(label));
+            Assert.assertTrue("Home page should have a [" + label + "] button but found text, "
+                    + element.getText(), element.getText().equals(label));
 
-            Assert.assertTrue("Button [" + label +"] should be enabled but is not.", element.isEnabled());
+            Assert.assertTrue("Button [" + label + "] should be enabled but is not.", element.isEnabled());
 
         } catch (NoSuchElementException e2) {
             Assert.fail("Unable to find button for " + PropUtils.get("homepage.read.wsdl.label"));

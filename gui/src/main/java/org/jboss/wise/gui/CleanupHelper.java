@@ -16,44 +16,43 @@
  */
 package org.jboss.wise.gui;
 
-import java.util.LinkedList;
-import java.util.List;
+import org.jboss.logging.Logger;
 
 import javax.annotation.PreDestroy;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-
-import org.jboss.logging.Logger;
+import java.util.LinkedList;
+import java.util.List;
 
 @Singleton
 @Startup
 public class CleanupHelper {
 
     private static List<CleanupTask<?>> tasks = new LinkedList<CleanupTask<?>>();
-    
+
     @Schedule(minute = "*/3", hour = "*", persistent = false) //every 3 minutes
     public void foo() {
-	Logger.getLogger(CleanupHelper.class).debug("Periodic cleanup...");
-	synchronized (tasks) {
-	    for (CleanupTask<?> task : tasks) {
-		task.refsCleanup();
-	    }
-	}
+        Logger.getLogger(CleanupHelper.class).debug("Periodic cleanup...");
+        synchronized (tasks) {
+            for (CleanupTask<?> task : tasks) {
+                task.refsCleanup();
+            }
+        }
     }
-    
+
     @PreDestroy
     public void cleanup() {
-	synchronized (tasks) {
-	    for (CleanupTask<?> task : tasks) {
-		task.refsCleanupNoChecks();
-	    }
-	}
+        synchronized (tasks) {
+            for (CleanupTask<?> task : tasks) {
+                task.refsCleanupNoChecks();
+            }
+        }
     }
-    
+
     public static void addTask(CleanupTask<?> task) {
-	synchronized (tasks) {
-	    tasks.add(task);
-	}
+        synchronized (tasks) {
+            tasks.add(task);
+        }
     }
 }

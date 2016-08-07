@@ -1,13 +1,13 @@
 package org.jboss.wise.test.navigation;
 
-import java.net.URL;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.wise.test.utils.StartPage;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.wise.test.utils.PropUtils;
+import org.jboss.wise.test.utils.StartPage;
+import org.jboss.wise.test.utils.WiseTest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,9 +16,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.jboss.wise.test.utils.WiseTest;
 
 
 /**
@@ -56,11 +56,11 @@ public class EndpointsViewBasicComponentsTestCase extends WiseTest {
         comfirmData();
     }
 
-    private void comfirmUIComponents(){
+    private void comfirmUIComponents() {
         // check page title
         try {
             WebElement pageTitle = browser.findElement(
-                By.className(PropUtils.get("tag.wiseStepLabel")));
+                    By.className(PropUtils.get("tag.wiseStepLabel")));
             Assert.assertNotNull("Page title was expected but was not found.", pageTitle);
         } catch (Exception e1) {
             Assert.fail("Failed to evaluate tag.wiseStepLabel: " + e1.getMessage());
@@ -73,7 +73,7 @@ public class EndpointsViewBasicComponentsTestCase extends WiseTest {
         try {
 
             List<WebElement> buttonList = browser.findElements(
-                By.className(PropUtils.get("tag.wise-gwt-Button")));
+                    By.className(PropUtils.get("tag.wise-gwt-Button")));
             Assert.assertTrue("Endpoint button list should have 2 entries but found : "
                     + buttonList.size(), (2 == buttonList.size()));
 
@@ -89,7 +89,7 @@ public class EndpointsViewBasicComponentsTestCase extends WiseTest {
                 }
             }
 
-        } catch(Exception e4) {
+        } catch (Exception e4) {
             Assert.fail("Failed menu button evaluation on URL: " + browser.getCurrentUrl());
         }
     }
@@ -100,12 +100,12 @@ public class EndpointsViewBasicComponentsTestCase extends WiseTest {
         try {
 
             List<WebElement> treeItemsList = browser.findElements(
-                By.className(PropUtils.get("tag.tree.item")));
+                    By.className(PropUtils.get("tag.tree.item")));
 
             Assert.assertTrue("Endpoint list should have 13 entries but found : "
                     + treeItemsList.size(), (13 == treeItemsList.size()));
 
-        } catch(Exception e5) {
+        } catch (Exception e5) {
             Assert.fail("Failed evaluating URL: " + browser.getCurrentUrl());
         }
     }

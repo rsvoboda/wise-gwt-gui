@@ -25,21 +25,16 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.wise.gwt.client.MainServiceAsync;
-import org.jboss.wise.gwt.client.event.InputWsdlEvent;
-import org.jboss.wise.gwt.client.event.InputWsdlEventHandler;
-import org.jboss.wise.gwt.client.event.PopupOpenEvent;
-import org.jboss.wise.gwt.client.event.ProcessingExceptionEvent;
-import org.jboss.wise.gwt.client.event.ProcessingExceptionEventHandler;
-import org.jboss.wise.gwt.client.event.SendWsdlEvent;
+import org.jboss.wise.gwt.client.event.*;
 import org.jboss.wise.gwt.client.view.WsdlView;
 import org.jboss.wise.gwt.shared.WsdlAddress;
 import org.jboss.wise.gwt.shared.WsdlInfo;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Widget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,132 +46,133 @@ import java.util.List;
  */
 public class WsdlPresenter implements Presenter {
 
-   private List<WsdlAddress> wsdlAddress;
+    private List<WsdlAddress> wsdlAddress;
 
-   public interface Display {
-      HasClickHandlers getSendButton();
+    public interface Display {
+        HasClickHandlers getSendButton();
 
-      HasClickHandlers getList();
+        HasClickHandlers getList();
 
-      void setData(List<String> data);
-      void setData(String data);
+        void setData(List<String> data);
 
-      int getClickedRow(ClickEvent event);
+        void setData(String data);
 
-      boolean urlFieldValidation();
+        int getClickedRow(ClickEvent event);
 
-      Widget asWidget();
-   }
+        boolean urlFieldValidation();
 
-   private final MainServiceAsync rpcService;
-   private final HandlerManager eventBus;
-   private final Display display;
+        Widget asWidget();
+    }
 
-   public WsdlPresenter(MainServiceAsync rpcService, HandlerManager eventBus, Display view) {
-      this.rpcService = rpcService;
-      this.eventBus = eventBus;
-      this.display = view;
-      bind();
-   }
+    private final MainServiceAsync rpcService;
+    private final HandlerManager eventBus;
+    private final Display display;
 
-   public void bind() {
+    public WsdlPresenter(MainServiceAsync rpcService, HandlerManager eventBus, Display view) {
+        this.rpcService = rpcService;
+        this.eventBus = eventBus;
+        this.display = view;
+        bind();
+    }
 
-      display.getSendButton().addClickHandler(new ClickHandler() {
-         public void onClick(ClickEvent event) {
+    public void bind() {
 
-            WsdlView view = (WsdlView) display;
+        display.getSendButton().addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
 
-            HasValue<String> wsdlURL = view.getWsdlAddress();
-            if (wsdlURL != null && !wsdlURL.getValue().trim().isEmpty() ) {
-               if(view.urlFieldValidation()) {
-                  //todo fix this
-                  // eventBus.fireEvent(new PopupOpenEvent());
+                WsdlView view = (WsdlView) display;
 
-                  rpcService.isValidURL(wsdlURL.getValue(), new AsyncCallback<Boolean>() {
-                     public void onSuccess(Boolean result) {
+                HasValue<String> wsdlURL = view.getWsdlAddress();
+                if (wsdlURL != null && !wsdlURL.getValue().trim().isEmpty()) {
+                    if (view.urlFieldValidation()) {
+                        //todo fix this
+                        // eventBus.fireEvent(new PopupOpenEvent());
 
-                        eventBus.fireEvent(new SendWsdlEvent(new WsdlInfo(
-                           ((WsdlView)display).getWsdlAddress().getValue(), null, null)));
-                     }
+                        rpcService.isValidURL(wsdlURL.getValue(), new AsyncCallback<Boolean>() {
+                            public void onSuccess(Boolean result) {
 
-                     public void onFailure(Throwable caught) {
-                        WsdlPresenter.this.eventBus.fireEvent(new ProcessingExceptionEvent(caught.getMessage()));
-                     }
-                  });
-               }
+                                eventBus.fireEvent(new SendWsdlEvent(new WsdlInfo(
+                                        ((WsdlView) display).getWsdlAddress().getValue(), null, null)));
+                            }
+
+                            public void onFailure(Throwable caught) {
+                                WsdlPresenter.this.eventBus.fireEvent(new ProcessingExceptionEvent(caught.getMessage()));
+                            }
+                        });
+                    }
+                }
             }
-         }
-      });
+        });
 
-      display.getList().addClickHandler(new ClickHandler() {
-         public void onClick(ClickEvent event) {
+        display.getList().addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
 
-            int selectedRow = display.getClickedRow(event);
+                int selectedRow = display.getClickedRow(event);
 
-            if (selectedRow >= 0) {
-               String id = wsdlAddress.get(selectedRow).getDisplayName();
-               WsdlView view = (WsdlView) display;
-               view.setWsdlAddress(id);
+                if (selectedRow >= 0) {
+                    String id = wsdlAddress.get(selectedRow).getDisplayName();
+                    WsdlView view = (WsdlView) display;
+                    view.setWsdlAddress(id);
+                }
             }
-         }
-      });
+        });
 
-      eventBus.addHandler(ProcessingExceptionEvent.TYPE,
-         new ProcessingExceptionEventHandler() {
-            public void onProcessingException(ProcessingExceptionEvent event) {
-               Window.alert("ERROR MESSAGE: " + event.getMessage());
+        eventBus.addHandler(ProcessingExceptionEvent.TYPE,
+                new ProcessingExceptionEventHandler() {
+                    public void onProcessingException(ProcessingExceptionEvent event) {
+                        Window.alert("ERROR MESSAGE: " + event.getMessage());
+                    }
+                });
+
+        eventBus.addHandler(InputWsdlEvent.TYPE,
+                new InputWsdlEventHandler() {
+                    @Override
+                    public void onSendWsdl(InputWsdlEvent event) {
+                        display.setData(event.getUrl());
+                    }
+                });
+    }
+
+    public void go(final HasWidgets address) {
+
+        address.clear();
+        address.add(display.asWidget());
+        fetchAddressDetails();
+    }
+
+    public void sortAddressDetails() {
+
+        for (int i = 0; i < wsdlAddress.size(); ++i) {
+            for (int j = 0; j < wsdlAddress.size() - 1; ++j) {
+                if (wsdlAddress.get(j).getDisplayName().compareToIgnoreCase(wsdlAddress.get(j + 1).getDisplayName()) >= 0) {
+                    WsdlAddress tmp = wsdlAddress.get(j);
+                    wsdlAddress.set(j, wsdlAddress.get(j + 1));
+                    wsdlAddress.set(j + 1, tmp);
+                }
             }
-      });
+        }
+    }
 
-      eventBus.addHandler(InputWsdlEvent.TYPE,
-         new InputWsdlEventHandler() {
-            @Override
-            public void onSendWsdl(InputWsdlEvent event) {
-               display.setData(event.getUrl());
-            }
-      });
-   }
+    private void fetchAddressDetails() {
 
-   public void go(final HasWidgets address) {
+        rpcService.getAddressDetails(new AsyncCallback<ArrayList<WsdlAddress>>() {
+            public void onSuccess(ArrayList<WsdlAddress> result) {
 
-      address.clear();
-      address.add(display.asWidget());
-      fetchAddressDetails();
-   }
+                wsdlAddress = result;
+                sortAddressDetails();
+                List<String> data = new ArrayList<String>();
 
-   public void sortAddressDetails() {
+                for (int i = 0; i < result.size(); ++i) {
+                    data.add(wsdlAddress.get(i).getDisplayName());
+                }
 
-      for (int i = 0; i < wsdlAddress.size(); ++i) {
-         for (int j = 0; j < wsdlAddress.size() - 1; ++j) {
-            if (wsdlAddress.get(j).getDisplayName().compareToIgnoreCase(wsdlAddress.get(j + 1).getDisplayName()) >= 0) {
-               WsdlAddress tmp = wsdlAddress.get(j);
-               wsdlAddress.set(j, wsdlAddress.get(j + 1));
-               wsdlAddress.set(j + 1, tmp);
-            }
-         }
-      }
-   }
-
-   private void fetchAddressDetails() {
-
-      rpcService.getAddressDetails(new AsyncCallback<ArrayList<WsdlAddress>>() {
-         public void onSuccess(ArrayList<WsdlAddress> result) {
-
-            wsdlAddress = result;
-            sortAddressDetails();
-            List<String> data = new ArrayList<String>();
-
-            for (int i = 0; i < result.size(); ++i) {
-               data.add(wsdlAddress.get(i).getDisplayName());
+                display.setData(data);
             }
 
-            display.setData(data);
-         }
+            public void onFailure(Throwable caught) {
 
-         public void onFailure(Throwable caught) {
-
-            Window.alert("Error fetching address details");
-         }
-      });
-   }
+                Window.alert("Error fetching address details");
+            }
+        });
+    }
 }
